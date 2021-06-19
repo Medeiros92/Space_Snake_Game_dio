@@ -1,0 +1,114 @@
+!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="shortcut icon" href="/img/cobra.ico" type="image/x-icon">
+    <link rel="stylesheet" href="/css/style.css">
+    <title>Snake Space</title>
+</head>
+<body>
+    <h1>Snake Space</h1>
+
+    <canvas id="estagio" width="500" height="500"></canvas>
+
+    <script type="text/javascript">
+        
+        window.onload = function(){  // chama função quando a pagina carregar
+ 
+            var estagio = document.getElementById('estagio');
+            var ctx = estagio.getContext("2d");
+            document.addEventListener("keydown", keyPush);
+            setInterval(game, 80);
+ 
+            const vel = 1; // velocidade
+ 
+            var vx = vy = 0; //velocidade de x e y
+            var px =10; // posição x
+            var py = 15; // posição y
+            var tp = 25; // tamanho da do quadrado
+            var qp = 20; // quantidade de quadrado
+            var cx = cy = 15; //posição da comida de x e y
+ 
+            var rastro = []; // rastro da cobra
+            calda = 5; // calda da cobra
+ 
+            function game(){
+                px += vx;
+                py += vy;
+                                   //--------------------------------//
+                if (px <0) {
+                    px = qp-1;
+                }
+                if (px > qp-1) {
+                    px = 0;          // se a cobrinha ultrapassar
+                }                    // a borda, ela aparece do
+                if (py < 0) {        // outro lado
+                    py = qp-1;
+                }
+                if (py > qp-1) {
+                    py = 0;
+                }
+                                    //--------------------------------//
+                ctx.fillStyle = "green"; //cor da tela
+                ctx.fillRect(0,0, estagio.width, estagio.height); // pinta a area da cor escolhida
+ 
+                ctx.fillStyle = "black"; // cor da comida
+                ctx.fillRect(cx*tp, cy*tp, tp,tp);
+ 
+                ctx.fillStyle = "lightgreen"; // cor do rastro
+                for (var i = 0; i < rastro.length; i++) {  // for para cada vez  que come ele pinda um rastro atrás da cabeça da cobra
+                    ctx.fillRect(rastro[i].x*tp, rastro[i].y*tp, tp-1,tp-1);
+                    if (rastro[i].x == px && rastro[i].y == py) // verifica se o rstro da calda está na mesma posição que a cabeça
+                    {
+                        vx = vy=0;
+                        calda =5;
+                    }
+                }
+ 
+                rastro.push({x:px,y:py }) // verifica a posição atual de x e y dando continuidade ao jogo
+                while (rastro.length > calda) { // se o tamanho do rastro é maior que a calda
+                    rastro.shift(); // remove o primeiro elemento do array
+                }
+ 
+                if (cx==px && cy==py){ // verifica se a posição da comida é a mesma da cabeça da cobra
+                    calda++; // se for, adiciona um elemento a calda
+                    cx = Math.floor(Math.random()*qp); //reposiciona a comida
+                    cy = Math.floor(Math.random()*qp); //reposiciona a comida
+                }
+ 
+            }
+ 
+            function keyPush(event){ //evento é acionado quando apertar as teclas
+ 
+                switch (event.keyCode) {
+                    case 37: // Left
+                        vx = -vel;
+                        vy = 0;
+                        break;
+                    case 38: // up
+                        vx = 0;
+                        vy = -vel;
+                        break;
+                    case 39: // right
+                        vx = vel;
+                        vy = 0;
+                        break;
+                    case 40: // down
+                        vx = 0;
+                        vy = vel;
+                        break;          
+                    default:
+                        
+                        break;
+                }
+ 
+ 
+            }
+ 
+        }
+ 
+    </script>
+</body>
+</html>
